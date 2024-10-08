@@ -138,7 +138,7 @@ while True:
     browser.quit()
 
     # الانتظار لمدة 10 دقائق (600 ثانية) قبل إعادة الفحص
-    time.sleep(20)  # 600 seconds = 10 minutes
+    time.sleep(100)  # 600 seconds = 10 minutes
 
    
 
