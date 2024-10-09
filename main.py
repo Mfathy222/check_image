@@ -102,8 +102,8 @@ while True:
     # رابط الصورة من خاصية src
     oldimage_xpath = image_xpath.get_attribute('src')
     # استخراج اسم الصورة من الرابط
-    #urlimage_name = os.path.basename(oldimage_xpath)
-    urlimage_name = 'AD09102024.jpg'
+    urlimage_name = os.path.basename(oldimage_xpath)
+    #urlimage_name = 'AD09102024.jpg'
     # تحميل الصورة باستخدام urllib3 وحفظها بنفس الاسم
     image_url = f'https://bankruptcy.gov.sa/ar/Training/Overview/PublishingImages/{urlimage_name}'
     response = http.request('GET', image_url)
