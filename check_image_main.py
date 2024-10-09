@@ -91,7 +91,7 @@ def get_oldest_image_by_name(directory_path):
     return oldest_image
 
 # مسار المجلد الذي يحتوي على الصور
-directory_path = r'/root'
+directory_path = r'//root/check_image'
 
 # بدء عملية الفحص الدوري للصورة كل 10 دقائق
 while True:
