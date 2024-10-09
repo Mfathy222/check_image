@@ -16,6 +16,7 @@ from selenium.webdriver.common.by import By
 SENDER_EMAIL = "app@sijiltech.com"
 SENDER_PASSWORD = "@Zofirm619"
 RECEIVER_EMAIL = "mohammed.fathy@sijiltech.com"
+CC_EMAIL = "abosetta@zofirm.com"
 SMTP_SERVER = "mail.sijiltech.com"
 SMTP_PORT = 465  # SMTP over SSL
 
@@ -47,6 +48,7 @@ def send_email(subject, body, attachments=None):
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
     msg['To'] = RECEIVER_EMAIL
+    msg['CC'] = CC_EMAIL
     msg['Subject'] = subject
 
     # Attach message text
@@ -138,7 +140,7 @@ while True:
     browser.quit()
 
     # الانتظار لمدة 10 دقائق (600 ثانية) قبل إعادة الفحص
-    time.sleep(20)  # 600 seconds = 10 minutes
+    time.sleep(3600)  # 600 seconds = 10 minutes
 
    
 
