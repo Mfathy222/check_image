@@ -75,59 +75,65 @@ def send_email(subject, body, attachments=None):
     except Exception as e:
         print(f"Failed to send email: {e}")
         return False
+# Present time function
+def print_current_time(label):
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    print(f"{label}: {current_time}")
 
-# دالة للحصول على أقدم صورة بناءً على الاسم
+# Function to get oldest image based on name
 def get_oldest_image_by_name(directory_path):
-    # الحصول على جميع الملفات في المجلد
+    # Get all files in the folder
     files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
     
-    # تصفية الملفات للحصول على الصور فقط بناءً على الامتدادات الشائعة
+    # Filter files to get only images based on common extensions.
     image_files = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
-    # إذا لم يتم العثور على أي صور في المجلد
+    # If no images are found in the folder
     if not image_files:
         return None
 
-    # الحصول على أقدم صورة بناءً على الترتيب الأبجدي للاسم
+    # Get oldest image based on name alphabetical order
     oldest_image = min(image_files, key=lambda f: f.lower())
     return oldest_image
 
-# مسار المجلد الذي يحتوي على الصور
+# Path of the folder containing the images
 directory_path = r'//root/check_image'
 
-# بدء عملية الفحص الدوري للصورة كل 10 دقائق
+# Start the image scanning process every 60 minutes
 while True:
-    # تشغيل المتصفح
+    print_current_time("Start checking at")
+
+    # Run browser
     browser = set_up_driver()
     browser.get("https://bankruptcy.gov.sa/ar/Training/Overview/Pages/QualificationPG.aspx#q-3")
     image_xpath = browser.find_element(By.XPATH, '//*[@id="page-34"]/div/p/img')
-    # رابط الصورة من خاصية src
+    # Image link from src property
     oldimage_xpath = image_xpath.get_attribute('src')
-    # استخراج اسم الصورة من الرابط
     urlimage_name = os.path.basename(oldimage_xpath)
-    #urlimage_name = 'AD09102024.jpg'
-    # تحميل الصورة باستخدام urllib3 وحفظها بنفس الاسم
+    
+    # Upload the image using urllib3 and save it with the same name
     image_url = f'https://bankruptcy.gov.sa/ar/Training/Overview/PublishingImages/{urlimage_name}'
     response = http.request('GET', image_url)
     with open(urlimage_name, 'wb') as file:
         file.write(response.data)
 
-    # الحصول على اسم الصورة القديمة من المجلد بناءً على الاسم
+    # Get old image name from folder based on name
     oldest_image = get_oldest_image_by_name(directory_path)
     print(f"Oldest image in directory: {oldest_image}")
     print(f"Image from website: {urlimage_name}")
 
-    # مقارنة الصورة الجديدة بالصورة القديمة المحفوظة
+    # Compare the new image with the old saved image.
     if oldest_image == urlimage_name:
         print("The oldest image on your computer matches the image from the website. No new image found.")
     else:
         print(f"The oldest image saved on your computer is not the same as {urlimage_name}")
-        # إرسال البريد الإلكتروني عند تغيير الصورة
+        
+        # Send email when image is changed
         email_subject = "Image Change Detected"
         email_body = f"The image on the website has changed. The new image is {urlimage_name}."
         email_sent = send_email(subject=email_subject, body=email_body, attachments=[oldest_image, urlimage_name])
 
-        # حذف الصورة القديمة إذا تم إرسال البريد الإلكتروني بنجاح
+        # Delete old image if email is sent successfully
         if email_sent and oldest_image:
             old_image_path = os.path.join(directory_path, oldest_image)
             try:
@@ -135,12 +141,19 @@ while True:
                 print(f"Old image {oldest_image} has been successfully deleted.")
             except Exception as e:
                 print(f"Failed to delete old image {oldest_image}: {e}")
-
-    # إغلاق المتصفح بعد الفحص
+    # Close browser after scanning
     browser.quit()
+    print_current_time("Last check at")
 
-    # الانتظار لمدة 10 دقائق (600 ثانية) قبل إعادة الفحص
-    time.sleep(3600)  # 600 seconds = 10 minutes
+    # Wait 60 minutes before re-scanning.
+    countdown_time = 3600  
+    while countdown_time > 0:
+        mins, secs = divmod(countdown_time, 60)
+        print(f"Time remaining before next check: {mins} minutes, {secs} seconds", end="\r")
+        time.sleep(1)
+        countdown_time -= 1
+    print("\nStarting new check cycle...\n")
+
 
    
 
