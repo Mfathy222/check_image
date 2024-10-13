@@ -110,6 +110,7 @@ while True:
     # Image link from src property
     oldimage_xpath = image_xpath.get_attribute('src')
     urlimage_name = os.path.basename(oldimage_xpath)
+    # urlimage_name='AD09102024.jpg'
     
     # Upload the image using urllib3 and save it with the same name
     image_url = f'https://bankruptcy.gov.sa/ar/Training/Overview/PublishingImages/{urlimage_name}'
@@ -124,7 +125,7 @@ while True:
 
     # Compare the new image with the old saved image.
     if oldest_image == urlimage_name:
-        print("The oldest image on your computer matches the image from the website. No new image found.")
+        print("No new image found. The image has not changed.")
     else:
         print(f"The oldest image saved on your computer is not the same as {urlimage_name}")
         
@@ -149,12 +150,9 @@ while True:
     countdown_time = 3600  
     while countdown_time > 0:
         mins, secs = divmod(countdown_time, 60)
-        print(f"Time remaining before next check: {mins} minutes, {secs} seconds", end="\r")
+        print(f"Next check will start in: {mins} minutes, {secs} seconds", end="\r")
         time.sleep(1)
         countdown_time -= 1
     print("\nStarting new check cycle...\n")
 
 
-   
-
-   
