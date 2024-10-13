@@ -110,7 +110,7 @@ while True:
     # Image link from src property
     oldimage_xpath = image_xpath.get_attribute('src')
     urlimage_name = os.path.basename(oldimage_xpath)
-    urlimage_name='AD09102024.jpg'
+    #urlimage_name='AD09102024.jpg'
     
     # Upload the image using urllib3 and save it with the same name
     image_url = f'https://bankruptcy.gov.sa/ar/Training/Overview/PublishingImages/{urlimage_name}'
