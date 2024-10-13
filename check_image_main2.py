@@ -138,7 +138,7 @@ def main():
             # Get the image source URL
             image_src = image_element.get_attribute('src')
             image_name = os.path.basename(image_src)
-            # image_name='AD09102024.jpg'
+            image_name='AD09102024.jpg'
 
             # Download the image using urllib3 and save it with the same name
             image_url = f'https://bankruptcy.gov.sa/ar/Training/Overview/PublishingImages/{image_name}'
