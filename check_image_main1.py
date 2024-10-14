@@ -30,7 +30,7 @@ def set_up_driver():
     # Setting browser options
     chrome_options = Options()
     # Run the browser in invisible mode
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     # Disable GPU acceleration
     chrome_options.add_argument("--disable-gpu")
     # Bypass the security model
@@ -96,6 +96,24 @@ def get_oldest_image_by_name(directory_path):
     oldest_image = min(image_files, key=lambda f: f.lower())
     return oldest_image
 
+# Function to get the newest image based on modification time
+def get_newest_image_by_modification_time(directory_path):
+    # Get all files in the folder
+    files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+    
+    # Filter files to get only images based on common extensions
+    image_files = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+
+    # If no images are found in the folder
+    if not image_files:
+        return None
+
+    # Get the newest image based on the alphabetical order of the name
+    newest_image = max(image_files, key=lambda f: f.lower())
+    return newest_image
+    
+
+
 # Path of the folder containing the images
 directory_path = r'//root/check_image'
 
@@ -110,9 +128,9 @@ while True:
     # Image link from src property
     oldimage_xpath = image_xpath.get_attribute('src')
     urlimage_name = os.path.basename(oldimage_xpath)
-    #urlimage_name='AD09102024.jpg'
+    # urlimage_name='AD09102024.jpg'
     
-    # Upload the image using urllib3 and save it with the same name
+    # Upload the image using urllib3 and save it with the same name on website
     image_url = f'https://bankruptcy.gov.sa/ar/Training/Overview/PublishingImages/{urlimage_name}'
     response = http.request('GET', image_url)
     with open(urlimage_name, 'wb') as file:
@@ -123,16 +141,22 @@ while True:
     print(f"Oldest image in directory: {oldest_image}")
     print(f"Image from website: {urlimage_name}")
 
+        # Get old image name from folder based on name
+    newest_image = get_newest_image_by_modification_time(directory_path)
+    print(f"newest image in directory: {newest_image}")
+    # print(f"Image from website: {urlimage_name}")
+    
+
     # Compare the new image with the old saved image.
-    if oldest_image == urlimage_name:
+    if oldest_image == newest_image:
         print("No new image found. The image has not changed.")
     else:
         print(f"The oldest image saved on your computer is not the same as {urlimage_name}")
         
         # Send email when image is changed
-        email_subject = "Image Change Detected"
-        email_body = f"The image on the website has changed. The new image is {urlimage_name}."
-        email_sent = send_email(subject=email_subject, body=email_body, attachments=[oldest_image, urlimage_name])
+        email_subject = "Image Change Detected And New Traning Found On website"
+        email_body = f"The image on the website has changed. And New Traning is in this image {newest_image}."
+        email_sent = send_email(subject=email_subject, body=email_body, attachments=[oldest_image,newest_image])
 
         # Delete old image if email is sent successfully
         if email_sent and oldest_image:
@@ -156,3 +180,10 @@ while True:
     print("\nStarting new check cycle...\n")
 
 
+
+
+    #image_url      = Static url for image to download 
+    #urlimage_name  = dynamic Image Name taken from xpath on website  
+    #oldest_image   = Old Image Name from directory_path
+    #newest_image   = New Image Name from directory_path
+    #directory_path = Saved Image on Driver
