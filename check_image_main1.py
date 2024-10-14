@@ -30,7 +30,7 @@ def set_up_driver():
     # Setting browser options
     chrome_options = Options()
     # Run the browser in invisible mode
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     # Disable GPU acceleration
     chrome_options.add_argument("--disable-gpu")
     # Bypass the security model
